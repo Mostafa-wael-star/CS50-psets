@@ -78,7 +78,7 @@ static string *strings = NULL;
 string get_string(va_list *args, const char *format, ...)
 {
     // Check whether we have room for another string
-    if (allocations == SIZE_MAX / sizeof(string))
+    if (allocations == SIZE_MAX / sizeof (string))
     {
         return NULL;
     }
@@ -193,7 +193,7 @@ string get_string(va_list *args, const char *format, ...)
     s[size] = '\0';
 
     // Resize array so as to append string
-    string *tmp = realloc(strings, sizeof(string) * (allocations + 1));
+    string *tmp = realloc(strings, sizeof (string) * (allocations + 1));
     if (tmp == NULL)
     {
         free(s);
@@ -263,7 +263,7 @@ double get_double(const char *format, ...)
         }
 
         // Return a double if only a double was provided
-        if (strlen(line) > 0 && !isspace((unsigned char)line[0]))
+        if (strlen(line) > 0 && !isspace((unsigned char) line[0]))
         {
             char *tail;
             errno = 0;
@@ -305,7 +305,7 @@ float get_float(const char *format, ...)
         }
 
         // Return a float if only a float was provided
-        if (strlen(line) > 0 && !isspace((unsigned char)line[0]))
+        if (strlen(line) > 0 && !isspace((unsigned char) line[0]))
         {
             char *tail;
             errno = 0;
@@ -346,7 +346,7 @@ int get_int(const char *format, ...)
         }
 
         // Return an int if only an int (in range) was provided
-        if (strlen(line) > 0 && !isspace((unsigned char)line[0]))
+        if (strlen(line) > 0 && !isspace((unsigned char) line[0]))
         {
             char *tail;
             errno = 0;
@@ -383,7 +383,7 @@ long get_long(const char *format, ...)
         }
 
         // Return a long if only a long (in range) was provided
-        if (strlen(line) > 0 && !isspace((unsigned char)line[0]))
+        if (strlen(line) > 0 && !isspace((unsigned char) line[0]))
         {
             char *tail;
             errno = 0;
@@ -420,7 +420,7 @@ long long get_long_long(const char *format, ...)
         }
 
         // Return a long long if only a long long (in range) was provided
-        if (strlen(line) > 0 && !isspace((unsigned char)line[0]))
+        if (strlen(line) > 0 && !isspace((unsigned char) line[0]))
         {
             char *tail;
             errno = 0;
@@ -454,23 +454,24 @@ static void teardown(void)
  * Preprocessor magic to make initializers work somewhat portably
  * Modified from http://stackoverflow.com/questions/1113409/attribute-constructor-equivalent-in-vc
  */
-#if defined(_MSC_VER) // MSVC
-#pragma section(".CRT$XCU", read)
-#define INITIALIZER_(FUNC, PREFIX)                                 \
-    static void FUNC(void);                                        \
-    __declspec(allocate(".CRT$XCU")) void (*FUNC##_)(void) = FUNC; \
-    __pragma(comment(linker, "/include:" PREFIX #FUNC "_")) static void FUNC(void)
-#ifdef _WIN64
-#define INITIALIZER(FUNC) INITIALIZER_(FUNC, "")
+#if defined (_MSC_VER) // MSVC
+    #pragma section(".CRT$XCU",read)
+    #define INITIALIZER_(FUNC,PREFIX) \
+        static void FUNC(void); \
+        __declspec(allocate(".CRT$XCU")) void (*FUNC##_)(void) = FUNC; \
+        __pragma(comment(linker,"/include:" PREFIX #FUNC "_")) \
+        static void FUNC(void)
+    #ifdef _WIN64
+        #define INITIALIZER(FUNC) INITIALIZER_(FUNC,"")
+    #else
+        #define INITIALIZER(FUNC) INITIALIZER_(FUNC,"_")
+    #endif
+#elif defined (__GNUC__) // GCC, Clang, MinGW
+    #define INITIALIZER(FUNC) \
+        static void FUNC(void) __attribute__((constructor)); \
+        static void FUNC(void)
 #else
-#define INITIALIZER(FUNC) INITIALIZER_(FUNC, "_")
-#endif
-#elif defined(__GNUC__) // GCC, Clang, MinGW
-#define INITIALIZER(FUNC)                                \
-    static void FUNC(void) __attribute__((constructor)); \
-    static void FUNC(void)
-#else
-#error The CS50 library requires some compiler-specific features, \
+    #error The CS50 library requires some compiler-specific features, \
            but we do not recognize this compiler/version. Please file an issue at \
            https://github.com/cs50/libcs50
 #endif
