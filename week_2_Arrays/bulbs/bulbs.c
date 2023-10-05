@@ -13,6 +13,10 @@ int main(void)
 {
     string s = get_string("please enter the message : ");
     int length = str_length(s);
+    for (int i = 0; i < length; i++)
+    {
+        turn_to_bin(s[i]);
+    }
 }
 
 int str_length(string s)
@@ -40,17 +44,22 @@ void print_bulb(int bit)
 void turn_to_bin(char c)
 {
     char bits[8];
-    int d = c;
     for (int i = 0; i < BITS_IN_BYTE; i++)
     {
-        if (d % 2 == 0)
+        if (c % 2 == 0)
             bits[i] = '0';
         else
             bits[i] = '1';
-        d /= 2;
+        c /= 2;
     }
     for (int i = BITS_IN_BYTE - 1; i >= 0; i--)
     {
-        printf("%c", bits[i]);
+        if (bits[i] == '1')
+            printf("1");
+        // print_bulb(1);
+        else
+            printf("0");
+        // print_bulb(0);
     }
+    putchar('\n');
 }
