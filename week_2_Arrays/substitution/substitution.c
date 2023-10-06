@@ -4,23 +4,32 @@
 #include <stdlib.h>
 #include <string.h>
 
-string substitute_text(string plainText);
+string substitute_text(string plainText, string key);
 bool check_valid_args(int argc, string argv);
 bool check_for_duplicates(string argv);
 bool check_for_specials(string argv);
 
 int main(int argc, string argv[])
 {
-    if (check_valid_args(argc, argv[1]) == false)
+    // converting the the key to upper case for vaildation and substitution
+
+    string key = argv[1];
+    if (key != NULL)
+    {
+        for (int i = 0; i < strlen(key); i++)
+            key[i] = toupper(key[i]);
+    }
+
+    if (check_valid_args(argc, key) == false)
         return 1;
 
     string plainText = get_string("plaintext:");
 
-    string cipherText = substitute_text(plainText);
+    string cipherText = substitute_text(plainText, key);
     printf("ciphertext:%s", cipherText);
 }
 
-string substitute_text(string plainText)
+string substitute_text(string plainText, string key)
 {
 }
 
@@ -49,8 +58,6 @@ bool check_valid_args(int argc, string argv)
 bool check_for_duplicates(string argv)
 
 {
-    for (int i = 0; i < strlen(argv); i++)
-        argv[i] = toupper(argv[i]);
 
     for (int i = 0; i < strlen(argv); i++)
     {
