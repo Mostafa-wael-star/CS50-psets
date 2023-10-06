@@ -23,14 +23,27 @@ int main(int argc, string argv[])
     if (check_valid_args(argc, key) == false)
         return 1;
 
-    string plainText = get_string("plaintext:");
+    string plainText = get_string("plaintext:  ");
 
     string cipherText = substitute_text(plainText, key);
-    printf("ciphertext:%s", cipherText);
+    printf("ciphertext: %s", cipherText);
 }
 
 string substitute_text(string plainText, string key)
 {
+
+    for (int i = 0; i < strlen(plainText); i++)
+    {
+        if (isalpha(plainText[i]))
+        {
+            if (isupper(plainText[i]) == true)
+                plainText[i] = key[plainText[i] - 65];
+
+            else
+                plainText[i] = tolower(key[plainText[i] - 97]);
+        }
+    }
+    return plainText;
 }
 
 bool check_valid_args(int argc, string argv)
